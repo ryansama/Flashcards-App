@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Flashcards
     {
         //Make the IList array containing the user's card collection
         IList<Card>[] cardsCollection = makeList();
-
+        static string file;
         /// <summary>
         /// Get the directory of the program and return 
         /// a string containing the "\cards" directory.
@@ -40,6 +41,7 @@ namespace Flashcards
         /// </summary>
         /// <returns></returns>
         //TODO Vigorous testing
+        
         static IList<Card>[] makeList()
         {
             
@@ -60,7 +62,7 @@ namespace Flashcards
 
                 for(int j = 0; j < cardCount; j++)
                 {
-                    iListArray[i].Add(new Card());
+                    //iListArray[i].Add(new Card());
                 }
                 
                 //Console.WriteLine(fileEntries[i]);
@@ -71,7 +73,7 @@ namespace Flashcards
             return iListArray;
 
         }
-
+        
         /// <summary>
         /// Reads a .txt file, populates
         /// a Card object using its content 
@@ -79,7 +81,7 @@ namespace Flashcards
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        static Card makeCard(string path)
+        /**static Card makeCard(string path)
         {
             Card newCard = new Card();
             int counter = 1;
@@ -95,7 +97,7 @@ namespace Flashcards
 
             file.Close();
             return newCard;
-        }
+        }*/
 
         //main
         static int Main(string[] args)
@@ -138,7 +140,7 @@ namespace Flashcards
                         createCard();
                         break;
                     case "5":
-                        //readCards();
+                        readCards();
                         break;
                     case "6":
                         deleteCard();
@@ -191,7 +193,7 @@ namespace Flashcards
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write(folderName);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(" was created succesfully. Press any key to continue.");
+            Console.Write(" was created successfully. Press any key to continue.");
             Console.ResetColor();
             Console.ReadKey();
         }
@@ -280,7 +282,7 @@ namespace Flashcards
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write(folderName);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(" was deleted succesfully. Press any key to continue.");
+            Console.Write(" was deleted successfully. Press any key to continue.");
             Console.ResetColor();
             Console.ReadKey();
         }
@@ -292,6 +294,7 @@ namespace Flashcards
         /// </summary>
         static void createCard()
         {
+            int counter = 1;
             Console.Clear();
             while (true)
             {
@@ -309,9 +312,14 @@ namespace Flashcards
                     Console.Write("What would you like to write on side 2?");
                     cardContent[1] = Console.ReadLine();
 
-                    string textFileName = "1";
+                    //finds an integer that is not already used by another file
+                    while (File.Exists(path + "\\" + counter + ".txt"))
+                    {
+                        counter++;
+                    }
+
                     //create and write to new text file
-                    System.IO.File.WriteAllLines(@path + "/" + textFileName + ".txt", cardContent);
+                    System.IO.File.WriteAllLines(@path + "/" + counter + ".txt", cardContent);
                     break;
                 }
                 else
@@ -322,7 +330,7 @@ namespace Flashcards
 
             //inform user about successful card group deletion
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("The card was created successcully. Press any key to continue.");
+            Console.Write("The card was created successfully. Press any key to continue.");
             Console.ResetColor();
             Console.ReadKey();
         }
@@ -333,6 +341,75 @@ namespace Flashcards
         /// </summary>
         static void readCards()
         {
+            string folderName;
+            string cardDir;
+            string id;
+            string side1;
+            string side2;
+            int counter = 0;
+            int length;
+            Random rand = new Random();
+            int sumNum;
+            Card next;
+            while (true)
+            {
+                Console.WriteLine("Which card group would you like to read?");
+                displayCardGroups(false);
+                folderName = Console.ReadLine();
+                cardDir = getUserDirectory() + folderName;
+
+                if (Directory.Exists(cardDir))
+                {
+                    length = Directory.GetFiles(@cardDir).Length;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("The specified card group does not exist. Please try again.");
+                }
+            }
+
+            Hashtable ht = new Hashtable();
+            string[] fileEntries = Directory.GetFiles(cardDir);
+            foreach (string fileName in fileEntries)
+            {
+                file = Path.GetFileName(fileName);
+                id = file.Substring(0, file.LastIndexOf(".txt"));
+                side1 = File.ReadLines(fileName).First();
+                side2 = File.ReadLines(fileName).Skip(1).Take(1).First();
+                next = new Card(id, side1, side2);
+                ht.Add(counter, next);
+                counter++;
+            }
+            Console.Clear();
+            for (int i = 0; i < length;i++)
+            {
+                sumNum = rand.Next(length);
+                next = (Card)ht[sumNum];
+                while (next.viewed)
+                {
+                    sumNum++;
+                    if (sumNum == length)
+                    {
+                        sumNum = 0;
+                    }
+                    next = (Card)ht[sumNum];
+                }
+
+                Console.WriteLine(next.side1);
+                Console.ReadKey();
+                Console.WriteLine(next.side2);
+                Console.WriteLine();
+                next.viewed = true;
+                Console.ReadKey();
+            }
+
+
+            Console.WriteLine("Finished card group " + folderName);
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+
+
 
         }
 
@@ -405,7 +482,7 @@ namespace Flashcards
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write(deleteCard);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(" was deleted succesfully. Press any key to continue.");
+            Console.Write(" was deleted successfully. Press any key to continue.");
             Console.ResetColor();
             Console.ReadKey();
 

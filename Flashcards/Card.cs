@@ -15,6 +15,7 @@ namespace Flashcards
 {
     class Card
     {
+<<<<<<< HEAD
         string id = "";
         string sideOne = "";
         string sideTwo = "";
@@ -42,6 +43,22 @@ namespace Flashcards
             this.viewed = true;
         }
         
+||||||| merged common ancestors
+        string id = "";
+        bool viewed = false;
+=======
+        public string id, side1, side2;
+        public bool viewed = false;
+
+
+        public Card(string id, string side1, string side2)
+        {
+            this.id = id;
+            this.side1 = side1;
+            this.side2 = side2;
+            viewed = false;
+        }
+>>>>>>> 4ff1b8dfd3290293273a35f14510d76e887e2b19
     }
 
     
