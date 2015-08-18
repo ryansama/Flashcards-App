@@ -89,7 +89,7 @@ namespace Flashcards
             System.IO.StreamReader file = new System.IO.StreamReader(path);
             while ((line = file.ReadLine()) != null)
             {
-                newCard.setSide(counter, line);
+                newCard.writeToSide(counter, line);
                 counter++;
             }
 
@@ -292,6 +292,7 @@ namespace Flashcards
         /// </summary>
         static void createCard()
         {
+            int counter = 1;
             Console.Clear();
             while (true)
             {
@@ -309,9 +310,14 @@ namespace Flashcards
                     Console.Write("What would you like to write on side 2?");
                     cardContent[1] = Console.ReadLine();
 
-                    string textFileName = "1";
+                    //finds an integer that is not already used by another file
+                    while (File.Exists(path + "\\" + counter + ".txt"))
+                    {
+                        counter++;
+                    }
+
                     //create and write to new text file
-                    System.IO.File.WriteAllLines(@path + "/" + textFileName + ".txt", cardContent);
+                    System.IO.File.WriteAllLines(@path + "/" + counter + ".txt", cardContent);
                     break;
                 }
                 else
