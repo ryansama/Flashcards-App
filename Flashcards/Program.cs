@@ -40,7 +40,6 @@ namespace Flashcards
         /// traversing through each card group.
         /// </summary>
         /// <returns></returns>
-        //TODO Vigorous testing
         
         static IList<Card>[] makeList()
         {
@@ -122,7 +121,7 @@ namespace Flashcards
                 makeList();
                 //get user's command
                 string choice = Console.ReadLine();
-
+                
                 //switch cases to lead to different functions
                 switch (choice)
                 {
@@ -294,13 +293,23 @@ namespace Flashcards
         /// </summary>
         static void createCard()
         {
+            string path = getUserDirectory();//get full path of cards/
+
+            //Check if the cards/ directory has any card groups. If it doesn't, prompt user to make a card group.
+            if (!Directory.EnumerateFileSystemEntries(path).Any()){
+                Console.WriteLine("You currently do not have any card groups. Please return to the main menu and create a card group first (press any key to return).");
+                Console.ReadKey();
+                return;
+            }
+
             int counter = 1;
             Console.Clear();
             while (true)
             {
                 Console.WriteLine("Which card group would you like to modify?");
-                displayCardGroups(false);
-                string path = getUserDirectory() + Console.ReadLine();
+                displayCardGroups(false);//display the card groups and allow for further user input
+                path = path + Console.ReadLine();//get specific card group
+
                 if (Directory.Exists(path))
                 {
                     string[] cardContent = { "", "" };
