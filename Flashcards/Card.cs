@@ -26,44 +26,6 @@ namespace Flashcards
             this.side2 = side2;
             viewed = false;
         }
-<<<<<<< HEAD
-||||||| merged common ancestors
-||||||| merged common ancestors
-        string id = "";
-        bool viewed = false;
-=======
-        string id = "";
-        string sideOne = "";
-        string sideTwo = "";
-        bool viewed = false;
-
-        //populates a side of a card with a string
-        public void writeToSide(int side, string content)
-        {
-            if (side == 1)
-            {
-                this.sideOne = content;
-            }
-            else
-            {
-                this.sideTwo = content;
-            }
-
-        }
-
-        //set the 'viewed' variable to true 
-        //so that it cannot be read twice in the same
-        //session.
-        public void setToViewed()
-        {
-            this.viewed = true;
-        }
-        
->>>>>>> Temporary merge branch 2
-=======
-
-          
->>>>>>> 462371fbe29778aa02cff1fbb2abba9c97d9057c
     }
 
     
