@@ -15,8 +15,6 @@ namespace Flashcards
 {
     class Program
     {
-        //Make the IList array containing the user's card collection
-        IList<Card>[] cardsCollection = makeList();
 
         /// <summary>
         /// Get the directory of the program and return 
@@ -43,28 +41,41 @@ namespace Flashcards
         static IList<Card>[] makeList()
         {
             
-            //get card group directories and store it in a string array
-            string[] fileEntries = Directory.GetDirectories(getUserDirectory());
+            //get card group paths and store it in a string array
+            string[] folders = Directory.GetDirectories(getUserDirectory());
 
             //number of card groups the user has
-            int numGroups = fileEntries.Length;
+            int numGroups = folders.Length;
             
-            //Create an array of ILists. The size of the array depends on the number of 
-            //card groups the user has.
+            /** FOR TESTING
+            foreach(string folder in folders)
+            {
+                Console.WriteLine(folder);
+            }
+            */
+
+            //Create an array of ILists. The size of the array depends on the number of card groups the user has.
             IList<Card>[] iListArray = new IList<Card>[numGroups];
 
             //get cards from each card group
-            for (int i = 0; i < fileEntries.Length; i++)
+            for (int i = 0; i < numGroups; i++)
             {
-                int cardCount = System.IO.Directory.GetFiles(fileEntries[i]).Length;
-
-                for(int j = 0; j < cardCount; j++)
-                {
-                    iListArray[i].Add(new Card());
-                }
                 
-                //Console.WriteLine(fileEntries[i]);
-                //Console.WriteLine(cardCount);
+                string[] fileEntries = System.IO.Directory.GetFiles(folders[i]);//.txt file paths of current card group
+                int numCards = fileEntries.Length;//number of cards in the folder
+
+                /** FOR TESTING
+                foreach (string file in fileEntries)
+                {
+                    Console.WriteLine(file);
+                }
+                */
+
+                for (int j = 0; j < numCards; j++)
+                {
+                    Card tempCard = makeCardObject(fileEntries[j]);//make a card from the current file
+                    iListArray[i].Add(tempCard);//add the card to the iList array's appropriate index
+                }
 
             }
 
@@ -79,7 +90,7 @@ namespace Flashcards
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        static Card makeCard(string path)
+        static Card makeCardObject(string path)
         {
             Card newCard = new Card();
             int counter = 1;
@@ -101,6 +112,9 @@ namespace Flashcards
         static int Main(string[] args)
         {
             Console.WriteLine("Welcome to the Flashcards app.");
+
+            //Make the IList array containing the user's card collection
+            IList<Card>[] cardsCollection = makeList();
             //loop to allow for continuous usage
             while (true)
             {
@@ -116,16 +130,19 @@ namespace Flashcards
                 Console.WriteLine("\n\t6: Delete card");
                 Console.WriteLine("\n\t7: Exit program\n");
                 Console.WriteLine("---------------------------------------------");
-                //Console.WriteLine(getUserDirectory());
-                makeList();
+
+                makeList(); // FOR TESTING
+
                 //get user's command
                 string choice = Console.ReadLine();
 
                 //switch cases to lead to different functions
                 switch (choice)
                 {
+
                     case "1":
                         createCardGroup();
+                        //cardsCollection = makeList();
                         break;
                     case "2":
                         Console.Clear();
@@ -133,6 +150,7 @@ namespace Flashcards
                         break;
                     case "3":
                         deleteCardGroup();
+                        //cardsCollection = makeList();
                         break;
                     case "4":
                         createCard();
@@ -148,9 +166,8 @@ namespace Flashcards
                     default:
                         Console.WriteLine("Invalid command. Please try again: ");
                         break;
-                }
 
-                //Console.ReadKey();
+                }
 
             }
 
@@ -211,11 +228,14 @@ namespace Flashcards
 
             Console.WriteLine("---------------------------------------------");
 
+            //if the function was called from main, allow the user to return to the main menu
             if (calledFromMain)
             {
                 Console.WriteLine("Press any key to continue.");
                 Console.ReadKey();
             }
+
+            
         }
 
         /// <summary>
