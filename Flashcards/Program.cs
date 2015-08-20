@@ -355,7 +355,7 @@ namespace Flashcards
 
         /// <summary>
         /// Allows the user to select a card group and
-        /// read its cards.
+        /// read its cards. Also used for testing of makeList().
         /// </summary>
         static void readCards()
         {
