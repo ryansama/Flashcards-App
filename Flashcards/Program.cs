@@ -37,7 +37,6 @@ namespace Flashcards
         /// traversing through each card group.
         /// </summary>
         /// <returns></returns>
-        //TODO Vigorous testing
         static IList<Card>[] makeList()
         {
             
@@ -56,7 +55,13 @@ namespace Flashcards
 
             //Create an array of ILists. The size of the array depends on the number of card groups the user has.
             IList<Card>[] iListArray = new IList<Card>[numGroups];
-
+            
+            for(int i = 0; i<iListArray.Length; i++)
+            {
+                var type = Type.GetType(typeof(List<Card>).AssemblyQualifiedName);
+                var list = (IList<Card>)Activator.CreateInstance(type);
+                iListArray[i] = list;
+            }
             //get cards from each card group
             for (int i = 0; i < numGroups; i++)
             {
@@ -74,7 +79,16 @@ namespace Flashcards
                 for (int j = 0; j < numCards; j++)
                 {
                     Card tempCard = makeCardObject(fileEntries[j]);//make a card from the current file
-                    iListArray[i].Add(tempCard);//add the card to the iList array's appropriate index
+                    tempCard.belongsTo = folders[i];
+
+                    try
+                    {
+                        iListArray[i].Add(tempCard);//add the card to the iList array's appropriate index
+                    }catch(NullReferenceException e)
+                    {
+                        Console.WriteLine("Exception when adding card to IList");
+                    }
+                    
                 }
 
             }
@@ -142,7 +156,7 @@ namespace Flashcards
 
                     case "1":
                         createCardGroup();
-                        //cardsCollection = makeList();
+                        cardsCollection = makeList();
                         break;
                     case "2":
                         Console.Clear();
@@ -150,13 +164,13 @@ namespace Flashcards
                         break;
                     case "3":
                         deleteCardGroup();
-                        //cardsCollection = makeList();
+                        cardsCollection = makeList();
                         break;
                     case "4":
                         createCard();
                         break;
                     case "5":
-                        //readCards();
+                        readCards(cardsCollection);
                         break;
                     case "6":
                         deleteCard();
@@ -221,10 +235,10 @@ namespace Flashcards
             Console.WriteLine("--------------Your card groups---------------");
             string targetDirectory = getUserDirectory();
 
-            // Process the list of files found in the directory. 
-            string[] fileEntries = Directory.GetDirectories(targetDirectory);
-            foreach (string fileName in fileEntries)
-                ProcessFolder(fileName);
+            // Process the list of folders found in the directory. 
+            string[] folders = Directory.GetDirectories(targetDirectory);
+            foreach (string folder in folders)
+                ProcessFolder(folder);
 
             Console.WriteLine("---------------------------------------------");
 
@@ -357,8 +371,56 @@ namespace Flashcards
         /// Allows the user to select a card group and
         /// read its cards. Also used for testing of makeList().
         /// </summary>
-        static void readCards()
+        static void readCards(IList<Card>[] collection)
         {
+            string folderName;//name of the card group that the user wants to read
+            string cardGroupPath;//the full path of a group in the cards/ directory
+            int cardGroupIndex = 2; //the index in the IList array that contains the card group the user wants to read
+
+            //asks user to select a card group
+            while (true)
+            {
+                Console.WriteLine("Which card group would you like to read?");
+                displayCardGroups(false);
+                folderName = Console.ReadLine();
+                cardGroupPath = getUserDirectory() + folderName;
+                break;
+                /**
+                //checks if specified card group exists, prompts user to enter name again if it doesn't
+                if (Directory.Exists(cardGroupPath))
+                {
+                    foreach(IList<Card> cardGroup in collection)
+                    {
+                        int index = 0;
+
+                        while (true)
+                        {
+                            if ((cardGroup[index].belongsTo).Equals(cardGroupPath))
+                            {
+                                cardGroupIndex = index;
+                                break;
+                            }
+                            else
+                            {
+                                index++;
+                            }
+                        }
+                            
+                    }
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("The specified card group does not exist. Please specify a valid card group.");
+                }*/
+            }
+
+            foreach (Card card in collection[cardGroupIndex])
+            {
+                Console.WriteLine(card.toString());
+            }
+
+            Console.ReadKey();
 
         }
 
@@ -463,6 +525,16 @@ namespace Flashcards
         {
             path = path.Replace(getUserDirectory() + cardGroup + "\\", "");
             Console.WriteLine(" - {0}", path);
+        }
+
+        /// <summary>
+        /// Check if the given directory contains any folders or files.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public bool IsDirectoryEmpty(string path)
+        {
+            return !Directory.EnumerateFileSystemEntries(path).Any();
         }
 
     }

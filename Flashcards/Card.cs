@@ -15,7 +15,7 @@ namespace Flashcards
 {
     class Card
     {
-        string id = "";//an id for the card (not sure if necessary)
+        public string belongsTo = "";//the path of the card group that contains this card
         string sideOne = "";//first side of the card
         string sideTwo = "";//second side of the card
         bool viewed = false;//a 'viewed' variable to determine if the card has been viewed
