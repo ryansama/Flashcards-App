@@ -125,7 +125,7 @@ namespace Flashcards
         //main
         static int Main(string[] args)
         {
-            Console.WriteLine("Welcome to the Flashcards app.");
+            Console.WriteLine("Welcome to the Flashcards app. (LINKED LIST SOLUTION)");
 
             //Make the IList array containing the user's card collection
             IList<Card>[] cardsCollection = makeList();
@@ -375,7 +375,7 @@ namespace Flashcards
         {
             string folderName;//name of the card group that the user wants to read
             string cardGroupPath;//the full path of a group in the cards/ directory
-            int cardGroupIndex = 2; //the index in the IList array that contains the card group the user wants to read
+            int cardGroupIndex = 0; //the index in the IList array that contains the card group the user wants to read
 
             //asks user to select a card group
             while (true)
@@ -384,43 +384,43 @@ namespace Flashcards
                 displayCardGroups(false);
                 folderName = Console.ReadLine();
                 cardGroupPath = getUserDirectory() + folderName;
-                break;
-                /**
-                //checks if specified card group exists, prompts user to enter name again if it doesn't
-                if (Directory.Exists(cardGroupPath))
-                {
-                    foreach(IList<Card> cardGroup in collection)
-                    {
-                        int index = 0;
 
-                        while (true)
-                        {
-                            if ((cardGroup[index].belongsTo).Equals(cardGroupPath))
-                            {
-                                cardGroupIndex = index;
-                                break;
-                            }
-                            else
-                            {
-                                index++;
-                            }
-                        }
-                            
-                    }
+                //check if specified directory exists and contains at least one file. 
+                if (Directory.Exists(cardGroupPath)&&!IsDirectoryEmpty(cardGroupPath))
+                {
                     break;
                 }
                 else
                 {
-                    Console.WriteLine("The specified card group does not exist. Please specify a valid card group.");
-                }*/
-            }
+                    Console.WriteLine("The specified card group does not exist or is empty. Please specify a valid card group.");
+                }
+   
+             }
 
-            foreach (Card card in collection[cardGroupIndex])
+            //find the correct IList in the collections array
+            IList<Card> toRead;
+            int counter = 0;
+            while (true)
             {
-                Console.WriteLine(card.toString());
+                toRead = collection[counter];
+                if (toRead[0].belongsTo.Equals(cardGroupPath))
+                {
+                    break;
+                }
+                else
+                {
+                    counter++;
+                }
             }
-
-            Console.ReadKey();
+            
+            //read cards in the card group
+            foreach(Card card in toRead)
+            {
+                Console.WriteLine(card.sideOne);
+                Console.ReadKey();
+                Console.WriteLine(card.sideTwo);
+                Console.WriteLine();
+            }
 
         }
 
@@ -532,7 +532,7 @@ namespace Flashcards
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public bool IsDirectoryEmpty(string path)
+        public static bool IsDirectoryEmpty(string path)
         {
             return !Directory.EnumerateFileSystemEntries(path).Any();
         }
