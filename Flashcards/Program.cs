@@ -144,8 +144,6 @@ namespace Flashcards
                 Console.WriteLine("\n\t7: Exit program\n");
                 Console.WriteLine("---------------------------------------------");
 
-                makeList(); // FOR TESTING
-
                 //get user's command
                 string choice = Console.ReadLine();
 
@@ -170,6 +168,7 @@ namespace Flashcards
                         break;
                     case "5":
                         readCards(cardsCollection);
+                        cardsCollection = makeList();
                         break;
                     case "6":
                         deleteCard();
@@ -411,11 +410,11 @@ namespace Flashcards
             {
                 if (collection[counter].Count == 0)
                 {
-                    Console.WriteLine("The list at index " + counter + " is empty.");
+                    //Console.WriteLine("The list at index " + counter + " is empty.");
                 }
                 else
                 {
-                    Console.WriteLine("The list at index " + counter + " is NOT empty.");
+                    //Console.WriteLine("The list at index " + counter + " is NOT empty.");
                     IList<Card> temp = collection[counter];
                     if (temp[0].belongsTo.Equals(cardGroupPath))
                     {
@@ -434,7 +433,7 @@ namespace Flashcards
             int read = 0;//number of cards that have been read
             while(read < numCards)
             {
-                Card card = toRead[rand.Next(-1, numCards)];
+                Card card = toRead[rand.Next(0, numCards)];
                 if (card.viewed == false)
                 {
                     Console.WriteLine(card.sideOne);
