@@ -125,16 +125,15 @@ namespace Flashcards
         //main
         static int Main(string[] args)
         {
-            Console.WriteLine("Welcome to the Flashcards app. (LINKED LIST SOLUTION)");
+     
+            IList<Card>[] cardsCollection = makeList();//Make the IList array containing the user's card collection
 
-            //Make the IList array containing the user's card collection
-            IList<Card>[] cardsCollection = makeList();
             //loop to allow for continuous usage
             while (true)
             {
                 Console.Clear();
                 //main menu
-                Console.WriteLine("---------------------------------------------");
+                Console.WriteLine("-----Flashcards App LINKED LIST SOLUTION-----\n");
                 Console.WriteLine("What would you like to do?");
                 Console.WriteLine("\n\t1: Create card group");
                 Console.WriteLine("\n\t2: Display card groups");
@@ -207,7 +206,6 @@ namespace Flashcards
 
                 // Try to create the directory.
                 DirectoryInfo di = Directory.CreateDirectory(path);
-                //Console.WriteLine("The directory was created successfully at {0}.", Directory.GetCreationTime(path));
 
             }
             catch (Exception e)
@@ -275,6 +273,7 @@ namespace Flashcards
             displayCardGroups(false);
             string folderName = Console.ReadLine();
             string path = getUserDirectory() + folderName;
+            bool deleted = true;
 
             try
             {
@@ -299,6 +298,7 @@ namespace Flashcards
                 else
                 {
                     Console.WriteLine("The specified card group does not exist.");
+                    deleted = false;
                 }
 
             }
@@ -308,15 +308,24 @@ namespace Flashcards
             }
             finally { }
 
-            //inform user about successful card group deletion
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("The card group ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write(folderName);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(" was deleted succesfully. Press any key to continue.");
-            Console.ResetColor();
-            Console.ReadKey();
+            if (deleted)
+            {
+                //inform user about successful card group deletion
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("The card group ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write(folderName);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(" was deleted succesfully. Press any key to continue.");
+                Console.ResetColor();
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine("Nothing was deleted. Press any key to contiune.");
+                Console.ReadKey();
+            }
+            
         }
 
         /// <summary>
@@ -375,7 +384,6 @@ namespace Flashcards
         {
             string folderName;//name of the card group that the user wants to read
             string cardGroupPath;//the full path of a group in the cards/ directory
-            int cardGroupIndex = 0; //the index in the IList array that contains the card group the user wants to read
 
             //asks user to select a card group
             while (true)
@@ -397,30 +405,42 @@ namespace Flashcards
    
              }
 
-            //find the correct IList in the collections array
-            IList<Card> toRead;
             int counter = 0;
-            while (true)
+            //find the correct IList in the collections array
+            while(counter < collection.Length-1)
             {
-                toRead = collection[counter];
-                if (toRead[0].belongsTo.Equals(cardGroupPath))
+                if (collection[counter].Count == 0)
                 {
-                    break;
+                    Console.WriteLine("The list at index " + counter + " is empty.");
                 }
                 else
                 {
-                    counter++;
+                    Console.WriteLine("The list at index " + counter + " is NOT empty.");
+                    IList<Card> temp = collection[counter];
+                    if (temp[0].belongsTo.Equals(cardGroupPath))
+                    {
+                        Console.WriteLine("Found the matching card group.");
+                        break;
+                    }
                 }
+
+                counter++;
             }
-            
-            //read cards in the card group
-            foreach(Card card in toRead)
+
+            IList<Card> toRead = collection[counter];
+
+            foreach (Card card in toRead)
             {
                 Console.WriteLine(card.sideOne);
-                Console.ReadKey();
+                Console.ReadKey(true);
                 Console.WriteLine(card.sideTwo);
                 Console.WriteLine();
             }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("You have finished reading this card group. Press any key to return to the main menu.");
+            Console.ResetColor();
+            Console.ReadKey();
 
         }
 
