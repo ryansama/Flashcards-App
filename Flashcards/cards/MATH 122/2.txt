@@ -1,2 +1,2 @@
-What is (P v Q) logically equivalent to?
-(Q v P)
+Question 2
+Answer 2

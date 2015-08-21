@@ -427,16 +427,27 @@ namespace Flashcards
                 counter++;
             }
 
-            IList<Card> toRead = collection[counter];
+            IList<Card> toRead = collection[counter];//the card group to be read
+            int numCards = toRead.Count;//number of cards in the group
+            Random rand = new Random();//random number generator
 
-            foreach (Card card in toRead)
+            int read = 0;//number of cards that have been read
+            while(read < numCards)
             {
-                Console.WriteLine(card.sideOne);
-                Console.ReadKey(true);
-                Console.WriteLine(card.sideTwo);
-                Console.WriteLine();
+                Card card = toRead[rand.Next(-1, numCards)];
+                if (card.viewed == false)
+                {
+                    Console.WriteLine(card.sideOne);
+                    Console.ReadKey(true);
+                    Console.WriteLine(card.sideTwo);
+                    Console.WriteLine();
+                    card.setToViewed();
+                    read++;
+                }
+           
             }
 
+            //notify user that the card group has been read
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("You have finished reading this card group. Press any key to return to the main menu.");
             Console.ResetColor();
