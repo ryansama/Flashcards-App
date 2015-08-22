@@ -89,7 +89,7 @@ namespace Flashcards
             System.IO.StreamReader file = new System.IO.StreamReader(path);
             while ((line = file.ReadLine()) != null)
             {
-                newCard.setSide(counter, line);
+                newCard.writeToSide(counter, line);
                 counter++;
             }
 
@@ -117,7 +117,7 @@ namespace Flashcards
                 Console.WriteLine("\n\t7: Exit program\n");
                 Console.WriteLine("---------------------------------------------");
                 //Console.WriteLine(getUserDirectory());
-                makeList();
+                //makeList();
                 //get user's command
                 string choice = Console.ReadLine();
 
