@@ -38,9 +38,10 @@ namespace Flashcards
         /// </summary>
         /// <returns></returns>
         static IList<Card>[] makeList()
-        {
+        { 
             //get card group paths and store it in a string array
             string[] folders = Directory.GetDirectories(getUserDirectory());
+
 
             //number of card groups the user has
             int numGroups = folders.Length;
@@ -68,12 +69,21 @@ namespace Flashcards
                 string[] fileEntries = System.IO.Directory.GetFiles(folders[i]);//.txt file paths of current card group
                 int numCards = fileEntries.Length;//number of cards in the folder
 
-                /** FOR TESTING
-                foreach (string file in fileEntries)
+                for (int j = 0; j < numCards; j++)
                 {
-                    Console.WriteLine(file);
+                    Card tempCard = makeCardObject(fileEntries[j]);//make a card from the current file
+                    tempCard.belongsTo = folders[i];
+
+                    try
+                    {
+                        iListArray[i].Add(tempCard);//add the card to the iList array's appropriate index
+                    }catch(NullReferenceException e)
+                    {
+                        Console.WriteLine("Exception when adding card to IList");
+                    }
+                    
+
                 }
-                */
 
                 for (int j = 0; j < numCards; j++)
                 {
@@ -379,6 +389,7 @@ namespace Flashcards
         /// </summary>
         static void readCards(IList<Card>[] collection)
         {
+
             string folderName;//name of the card group that the user wants to read
             string cardGroupPath;//the full path of a group in the cards/ directory
 
@@ -449,7 +460,6 @@ namespace Flashcards
             Console.Write("You have finished reading this card group. Press any key to return to the main menu.");
             Console.ResetColor();
             Console.ReadKey();
-
         }
 
         /// <summary>
